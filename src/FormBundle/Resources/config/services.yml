@@ -1,0 +1,19 @@
+services:
+    form.serializer_normalizer.form_error:
+        class: FormHandler\FormBundle\Serializer\Normalizer\FormInvalidNormalizer
+        arguments:
+            - '@translator'
+        public: false
+        tags:
+            - { name: 'serializer.normalizer' }
+
+    form.form_handler.form:
+        class: FormHandler\FormHandler
+        tags:
+            - { name: 'form.handler' }
+
+    form.type_extension.handler_options:
+        class: FormHandler\FormHandlerOptionsTypeExtension
+        tags:
+            - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
