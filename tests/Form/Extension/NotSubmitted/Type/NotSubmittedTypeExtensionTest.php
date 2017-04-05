@@ -1,8 +1,8 @@
 <?php
 
-namespace FormHandler\Tests\Form\Extension\Invalid\Type;
+namespace Symftony\FormHandler\Tests\Form\Extension\Invalid\Type;
 
-use FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
+use Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NotSubmittedTypeExtensionTest extends \PHPUnit_Framework_TestCase

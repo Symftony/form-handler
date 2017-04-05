@@ -1,6 +1,6 @@
 services:
     form.serializer_normalizer.form_error:
-        class: FormHandler\FormBundle\Serializer\Normalizer\FormInvalidNormalizer
+        class: Symftony\FormHandler\FormBundle\Serializer\Normalizer\FormInvalidNormalizer
         arguments:
             - '@translator'
         public: false
@@ -8,12 +8,12 @@ services:
             - { name: 'serializer.normalizer' }
 
     form.form_handler.form:
-        class: FormHandler\FormHandler
+        class: Symftony\FormHandler\FormHandler
         tags:
             - { name: 'form.handler' }
 
     form.type_extension.handler_options:
-        class: FormHandler\FormHandlerOptionsTypeExtension
+        class: Symftony\FormHandler\FormHandlerOptionsTypeExtension
         tags:
             - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
 

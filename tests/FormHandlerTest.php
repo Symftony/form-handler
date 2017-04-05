@@ -1,8 +1,8 @@
 <?php
 
-namespace FormHandler\Tests;
+namespace Symftony\FormHandler\Tests;
 
-use FormHandler\FormHandler;
+use Symftony\FormHandler\FormHandler;
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -59,7 +59,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FormHandler\Exception\NotSubmittedFormException
+     * @expectedException \Symftony\FormHandler\Exception\NotSubmittedFormException
      * @expectedExceptionMessage Not submitted form.
      */
     public function testHandleRequestThrowNotSubmittedFormException()
@@ -102,7 +102,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FormHandler\Exception\InvalidFormException
+     * @expectedException \Symftony\FormHandler\Exception\InvalidFormException
      * @expectedExceptionMessage Invalid form.
      */
     public function testHandleRequestThrowInvalidFormException()
@@ -161,7 +161,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FormHandler\Exception\TransformationFailedFormException
+     * @expectedException \Symftony\FormHandler\Exception\TransformationFailedFormException
      * @expectedExceptionMessage Transformation form failed.
      */
     public function testHandleRequestThrowTransformationFailedFormException()
@@ -283,7 +283,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FormHandler\Exception\NotSubmittedFormException
+     * @expectedException \Symftony\FormHandler\Exception\NotSubmittedFormException
      * @expectedExceptionMessage Not submitted form.
      */
     public function testHandleDataThrowNotSubmittedFormException()
@@ -334,7 +334,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FormHandler\Exception\InvalidFormException
+     * @expectedException \Symftony\FormHandler\Exception\InvalidFormException
      * @expectedExceptionMessage Invalid form.
      */
     public function testHandleDataThrowInvalidFormException()
@@ -405,7 +405,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FormHandler\Exception\TransformationFailedFormException
+     * @expectedException \Symftony\FormHandler\Exception\TransformationFailedFormException
      * @expectedExceptionMessage Transformation form failed.
      */
     public function testHandleDataThrowTransformationFailedFormException()

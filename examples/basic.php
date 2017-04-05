@@ -4,7 +4,7 @@ namespace Example;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use FormHandler\FormHandler;
+use Symftony\FormHandler\FormHandler;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Forms;
 

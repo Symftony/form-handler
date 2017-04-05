@@ -1,12 +1,12 @@
 <?php
 
-namespace FormHandler\Exception;
+namespace Symftony\FormHandler\Exception;
 
 use Symfony\Component\Form\FormInterface;
 
 /**
  * Class InvalidFormException
- * @package FormHandler\Exception
+ * @package Symftony\FormHandler\Exception
  */
 class InvalidFormException extends FormException
 {

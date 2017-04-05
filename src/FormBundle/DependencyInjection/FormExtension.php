@@ -1,6 +1,6 @@
 <?php
 
-namespace FormHandler\FormBundle\DependencyInjection;
+namespace Symftony\FormHandler\FormBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
  * Class FormExtension
- * @package FormHandler\FormBundle\DependencyInjection
+ * @package Symftony\FormHandler\FormBundle\DependencyInjection
  *
  * @codeCoverageIgnore
  */

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace FormHandler\Form\Extension\Invalid\Type;
+namespace Symftony\FormHandler\Form\Extension\Invalid\Type;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;

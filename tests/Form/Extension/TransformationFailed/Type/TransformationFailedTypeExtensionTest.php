@@ -1,8 +1,8 @@
 <?php
 
-namespace FormHandler\Tests\Form\Extension\Invalid\Type;
+namespace Symftony\FormHandler\Tests\Form\Extension\Invalid\Type;
 
-use FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
+use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransformationFailedTypeExtensionTest extends \PHPUnit_Framework_TestCase

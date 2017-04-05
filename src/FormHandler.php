@@ -1,10 +1,10 @@
 <?php
 
-namespace FormHandler;
+namespace Symftony\FormHandler;
 
-use FormHandler\Exception\InvalidFormException;
-use FormHandler\Exception\NotSubmittedFormException;
-use FormHandler\Exception\TransformationFailedFormException;
+use Symftony\FormHandler\Exception\InvalidFormException;
+use Symftony\FormHandler\Exception\NotSubmittedFormException;
+use Symftony\FormHandler\Exception\TransformationFailedFormException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 

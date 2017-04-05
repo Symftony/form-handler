@@ -1,14 +1,14 @@
 <?php
 
-namespace FormHandler\FormBundle;
+namespace Symftony\FormHandler\FormBundle;
 
-use FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
+use Symftony\FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Class FormHandlerBundle
- * @package FormHandler\FormBundle
+ * @package Symftony\FormHandler\FormBundle
  */
 class FormHandlerBundle extends Bundle
 {

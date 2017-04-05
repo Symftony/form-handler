@@ -1,12 +1,12 @@
 <?php
 
-namespace FormHandler\Exception;
+namespace Symftony\FormHandler\Exception;
 
 use Symfony\Component\Form\FormInterface;
 
 /**
  * Class TransformationFailedFormException
- * @package FormHandler\Exception
+ * @package Symftony\FormHandler\Exception
  */
 class TransformationFailedFormException extends FormException
 {

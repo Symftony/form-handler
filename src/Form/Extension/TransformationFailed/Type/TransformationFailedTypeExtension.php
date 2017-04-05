@@ -1,6 +1,6 @@
 <?php
 
-namespace FormHandler\Form\Extension\TransformationFailed\Type;
+namespace Symftony\FormHandler\Form\Extension\TransformationFailed\Type;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;

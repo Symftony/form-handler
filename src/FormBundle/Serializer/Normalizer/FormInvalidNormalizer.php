@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace FormHandler\FormBundle\Serializer\Normalizer;
+namespace Symftony\FormHandler\FormBundle\Serializer\Normalizer;
 
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;

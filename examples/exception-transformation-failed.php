@@ -4,9 +4,9 @@ namespace Example;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use FormHandler\Exception\FormException;
-use FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
-use FormHandler\FormHandler;
+use Symftony\FormHandler\Exception\FormException;
+use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
+use Symftony\FormHandler\FormHandler;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;

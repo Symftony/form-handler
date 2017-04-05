@@ -1,6 +1,6 @@
 <?php
 
-namespace FormHandler\Form\Extension\NotSubmitted\Type;
+namespace Symftony\FormHandler\Form\Extension\NotSubmitted\Type;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;

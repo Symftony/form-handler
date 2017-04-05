@@ -35,12 +35,12 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "FormHandler\\": "src/"
+            "Symftony\\FormHandler\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "FormHandler\\Tests\\": "tests/"
+            "Symftony\\FormHandler\\Tests\\": "tests/"
         }
     }
 }

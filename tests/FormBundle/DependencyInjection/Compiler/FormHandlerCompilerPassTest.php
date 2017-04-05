@@ -1,8 +1,8 @@
 <?php
 
-namespace FormHandler\Tests\FormBundle\DependencyInjection\Compiler;
+namespace Symftony\FormHandler\Tests\FormBundle\DependencyInjection\Compiler;
 
-use FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
+use Symftony\FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 

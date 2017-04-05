@@ -1,9 +1,9 @@
 <?php
 
-namespace FormHandler\Tests\FormBundle;
+namespace Symftony\FormHandler\Tests\FormBundle;
 
-use FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
-use FormHandler\FormBundle\FormHandlerBundle;
+use Symftony\FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
+use Symftony\FormHandler\FormBundle\FormHandlerBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FormBundleTest extends \PHPUnit_Framework_TestCase
