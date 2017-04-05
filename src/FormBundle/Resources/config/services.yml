@@ -12,8 +12,17 @@ services:
         tags:
             - { name: 'form.handler' }
 
-    form.type_extension.handler_options:
-        class: Symftony\FormHandler\FormHandlerOptionsTypeExtension
+    form.type_extension.invalid:
+        class: Symftony\FormHandler\Form\Extension\Invalid\Type\InvalidTypeExtension
         tags:
             - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
 
+    form.type_extension.not_submitted:
+        class: Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension
+        tags:
+            - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
+    form.type_extension.transformation_failed:
+        class: Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension
+        tags:
+            - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
