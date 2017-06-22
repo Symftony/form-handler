@@ -1,5 +1,5 @@
 services:
-    form.serializer_normalizer.form_error:
+    form_handler.serializer_normalizer.form_error:
         class: Symftony\FormHandler\FormBundle\Serializer\Normalizer\FormInvalidNormalizer
         arguments:
             - '@translator'
@@ -7,22 +7,22 @@ services:
         tags:
             - { name: 'serializer.normalizer' }
 
-    form.form_handler.form:
+    form_handler.form_handler.default:
         class: Symftony\FormHandler\FormHandler
         tags:
             - { name: 'form.handler' }
 
-    form.type_extension.invalid:
+    form_handler.type_extension.invalid:
         class: Symftony\FormHandler\Form\Extension\Invalid\Type\InvalidTypeExtension
         tags:
             - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
 
-    form.type_extension.not_submitted:
+    form_handler.type_extension.not_submitted:
         class: Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension
         tags:
             - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
 
-    form.type_extension.transformation_failed:
+    form_handler.type_extension.transformation_failed:
         class: Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension
         tags:
             - { name: 'form.type_extension', extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
