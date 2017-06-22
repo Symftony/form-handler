@@ -1,7 +1,7 @@
 {
     "name": "symftony/form-handler",
     "type": "library",
-    "description": "aSymfony form handler",
+    "description": "A Symfony form handler",
     "keywords": [
         "form",
         "handler",
@@ -11,19 +11,17 @@
     "homepage": "https://github.com/symftony/form-handler",
     "require": {
         "php": ">=5.5.9",
-        "symfony/form": ">=2.6"
+        "symfony/form": "2.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.0",
-        "symfony/config": ">=2.6",
-        "symfony/dependency-injection": ">=2.6",
-        "symfony/http-kernel": ">=2.6",
-        "symfony/validator": ">=2.6",
-        "symfony/serializer": ">=2.6"
+        "symfony/dependency-injection": ">=2.8",
+        "symfony/http-kernel": ">=2.8",
+        "symfony/validator": ">=2.8"
     },
     "suggest": {
-        "symfony/validator": ">=2.6",
-        "symfony/serializer": ">=2.6"
+        "symfony/validator": ">=2.8",
+        "symfony/serializer": ">=2.8"
     },
     "license": "MIT",
     "authors": [
