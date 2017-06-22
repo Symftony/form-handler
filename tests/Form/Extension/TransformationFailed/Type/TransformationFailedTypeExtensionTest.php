@@ -27,41 +27,10 @@ class TransformationFailedTypeExtensionTest extends \PHPUnit_Framework_TestCase
     public function testConfigureOptions()
     {
         $this->optionsResolverMock->expects($this->once())
-            ->method('hasDefault')
-            ->with($this->equalTo('handler_invalid_fatal'))
-            ->willReturn(true);
-
-        $this->optionsResolverMock->expects($this->once())
             ->method('setDefaults')
             ->with($this->equalTo([
-                'handler_transformation_failed_fatal' => false,
-                'handler_transformation_failed_data' => null,
+                'handler_transformation_failed' => false,
             ]));
-
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setAllowedTypes')
-            ->with($this->equalTo('handler_transformation_failed_fatal'), $this->equalTo('boolean'));
-
-        $this->transformationFailedTypeExtension->configureOptions($this->optionsResolverMock);
-    }
-
-    public function testConfigureOptionsTrigger()
-    {
-        $this->optionsResolverMock->expects($this->once())
-            ->method('hasDefault')
-            ->with($this->equalTo('handler_invalid_fatal'))
-            ->willReturn(false);
-
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setDefaults')
-            ->with($this->equalTo([
-                'handler_transformation_failed_fatal' => false,
-                'handler_transformation_failed_data' => null,
-            ]));
-
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setAllowedTypes')
-            ->with($this->equalTo('handler_transformation_failed_fatal'), $this->equalTo('boolean'));
 
         $this->transformationFailedTypeExtension->configureOptions($this->optionsResolverMock);
     }

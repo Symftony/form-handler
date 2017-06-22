@@ -29,13 +29,8 @@ class InvalidTypeExtensionTest extends \PHPUnit_Framework_TestCase
         $this->optionsResolverMock->expects($this->once())
             ->method('setDefaults')
             ->with($this->equalTo([
-                'handler_invalid_fatal' => false,
-                'handler_invalid_data' => null,
+                'handler_invalid' => false,
             ]));
-
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setAllowedTypes')
-            ->with($this->equalTo('handler_invalid_fatal'), $this->equalTo('boolean'));
 
         $this->invalidTypeExtension->configureOptions($this->optionsResolverMock);
     }

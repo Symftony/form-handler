@@ -30,7 +30,7 @@ $form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
         'FOO' => 'foo',
         'BAR' => 'bar',
     ],
-    'handler_transformation_failed_fatal' => true,
+    'handler_transformation_failed' => true,
 ]);
 
 // Handle request

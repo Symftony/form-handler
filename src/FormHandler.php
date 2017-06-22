@@ -54,29 +54,29 @@ class FormHandler
         $formConfig = $form->getConfig();
 
         if (!$form->isSubmitted()) {
-            if ($formConfig->getOption('handler_not_submitted_fatal', false)) {
+            if (true === $notSubmitted = $formConfig->getOption('handler_not_submitted', false)) {
                 throw new NotSubmittedFormException($form);
             }
 
-            return $formConfig->getOption('handler_not_submitted_data', null);
+            return $notSubmitted;
         }
 
-        if (!$form->isValid()) {
-            if ($formConfig->getOption('handler_invalid_fatal', false)) {
-                throw new InvalidFormException($form);
-            }
-
-            if ($formConfig->hasOption('handler_invalid_data')) {
-                return $formConfig->getOption('handler_invalid_data', null);
-            }
+        $formIsValid = $form->isValid();
+        $invalid = $formConfig->getOption('handler_invalid', false);
+        if (!$formIsValid && true === $invalid) {
+            throw new InvalidFormException($form);
         }
 
         if ($form->getTransformationFailure()) {
-            if ($formConfig->getOption('handler_transformation_failed_fatal', false)) {
+            if (true === $failed = $formConfig->getOption('handler_transformation_failed', false)) {
                 throw new TransformationFailedFormException($form);
             }
 
-            return $formConfig->getOption('handler_transformation_failed_data', null);
+            return $failed;
+        }
+
+        if (!$formIsValid) {
+            return $invalid;
         }
 
         return $form->getData();
@@ -94,31 +94,31 @@ class FormHandler
         $formConfig = $form->getConfig();
         // Don't auto-submit the form unless at least one field is present.
         if ('' === $form->getName() && count(array_intersect_key($data, $form->all())) <= 0) {
-            if ($formConfig->getOption('handler_not_submitted_fatal', false)) {
+            if (true === $notSubmitted = $formConfig->getOption('handler_not_submitted', false)) {
                 throw new NotSubmittedFormException($form);
             }
 
-            return $formConfig->getOption('handler_not_submitted_data', null);
+            return $notSubmitted;
         }
 
         $form->submit($data, $clearMissing);
 
-        if (!$form->isValid()) {
-            if ($formConfig->getOption('handler_invalid_fatal', false)) {
-                throw new InvalidFormException($form);
-            }
-
-            if ($formConfig->hasOption('handler_invalid_data')) {
-                return $formConfig->getOption('handler_invalid_data', null);
-            }
+        $formIsValid = $form->isValid();
+        $invalid = $formConfig->getOption('handler_invalid', false);
+        if (!$formIsValid && true === $invalid) {
+            throw new InvalidFormException($form);
         }
 
         if ($form->getTransformationFailure()) {
-            if ($formConfig->getOption('handler_transformation_failed_fatal', false)) {
+            if (true === $failed = $formConfig->getOption('handler_transformation_failed', false)) {
                 throw new TransformationFailedFormException($form);
             }
 
-            return $formConfig->getOption('handler_transformation_failed_data', null);
+            return $failed;
+        }
+
+        if (!$formIsValid) {
+            return $invalid;
         }
 
         return $form->getData();

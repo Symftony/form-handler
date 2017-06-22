@@ -13,11 +13,8 @@ class NotSubmittedTypeExtension extends AbstractTypeExtension
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'handler_not_submitted_fatal' => false,
-            'handler_not_submitted_data' => null,
+            'handler_not_submitted' => false,
         ));
-
-        $resolver->setAllowedTypes('handler_not_submitted_fatal', 'boolean');
     }
 
     /**

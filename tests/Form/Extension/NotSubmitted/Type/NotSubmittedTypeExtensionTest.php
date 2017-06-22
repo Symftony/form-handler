@@ -29,13 +29,8 @@ class NotSubmittedTypeExtensionTest extends \PHPUnit_Framework_TestCase
         $this->optionsResolverMock->expects($this->once())
             ->method('setDefaults')
             ->with($this->equalTo([
-                'handler_not_submitted_fatal' => false,
-                'handler_not_submitted_data' => null,
+                'handler_not_submitted' => false,
             ]));
-
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setAllowedTypes')
-            ->with($this->equalTo('handler_not_submitted_fatal'), $this->equalTo('boolean'));
 
         $this->notSubmittedTypeExtension->configureOptions($this->optionsResolverMock);
     }

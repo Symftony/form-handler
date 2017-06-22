@@ -14,11 +14,8 @@ class InvalidTypeExtension extends AbstractTypeExtension
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'handler_invalid_fatal' => false,
-            'handler_invalid_data' => null,
+            'handler_invalid' => false,
         ));
-
-        $resolver->setAllowedTypes('handler_invalid_fatal', 'boolean');
     }
 
     /**

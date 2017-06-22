@@ -7,11 +7,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Symftony\FormHandler\Exception\FormException;
 use Symftony\FormHandler\Form\Extension\Invalid\Type\InvalidTypeExtension;
 use Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
+use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
 use Symftony\FormHandler\FormHandler;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;
-use Symfony\Component\Validator\Validation;
 
 // Initialize form component
 // add not submitted type extension
@@ -20,7 +19,7 @@ use Symfony\Component\Validator\Validation;
 $formFactory = Forms::createFormFactoryBuilder()
     ->addTypeExtension(new NotSubmittedTypeExtension())
     ->addTypeExtension(new InvalidTypeExtension())
-    ->addExtension(new ValidatorExtension(Validation::createValidator()))
+    ->addTypeExtension(new TransformationFailedTypeExtension())
     ->getFormFactory();
 
 // Initialize form handler
@@ -34,8 +33,9 @@ $form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
         'FOO' => 'foo',
         'BAR' => 'bar',
     ],
-    'handler_invalid_fatal' => true,
-    'handler_not_submitted_fatal' => true,
+    'handler_invalid' => true,
+    'handler_not_submitted' => true,
+    'handler_transformation_failed' => true,
 ]);
 
 // Handle request

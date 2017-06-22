@@ -31,7 +31,7 @@ $form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
         'FOO' => 'foo',
         'BAR' => 'bar',
     ],
-    'handler_invalid_fatal' => true,
+    'handler_invalid' => true,
 ]);
 
 // Handle request

@@ -32,8 +32,8 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->formFactoryMock = $this->getMock(FormFactoryInterface::class);
-        $this->formMock = $this->getMock(FormInterface::class);
         $this->formConfigMock = $this->getMock(FormConfigInterface::class);
+        $this->formMock = $this->getMock(FormInterface::class);
 
         $this->formHandler = new FormHandler();
     }
@@ -65,16 +65,20 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequestThrowNotSubmittedFormException()
     {
         $this->formMock->expects($this->once())
-            ->method('isSubmitted')
-            ->willReturn(false);
+            ->method('handleRequest')
+            ->with('my_fake_request');
 
         $this->formMock->expects($this->once())
             ->method('getConfig')
             ->willReturn($this->formConfigMock);
 
+        $this->formMock->expects($this->once())
+            ->method('isSubmitted')
+            ->willReturn(false);
+
         $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->with($this->equalTo('handler_not_submitted_fatal'), $this->equalTo(false))
+            ->with($this->equalTo('handler_not_submitted'), $this->equalTo(false))
             ->willReturn(true);
 
         $this->formHandler->handleRequest($this->formMock, 'my_fake_request');
@@ -83,20 +87,21 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequestNotSubmitted()
     {
         $this->formMock->expects($this->once())
-            ->method('isSubmitted')
-            ->willReturn(false);
+            ->method('handleRequest')
+            ->with('my_fake_request');
 
         $this->formMock->expects($this->once())
             ->method('getConfig')
             ->willReturn($this->formConfigMock);
 
-        $this->formConfigMock->expects($this->exactly(2))
+        $this->formMock->expects($this->once())
+            ->method('isSubmitted')
+            ->willReturn(false);
+
+        $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->withConsecutive(
-                [$this->equalTo('handler_not_submitted_fatal'), $this->equalTo(false)],
-                [$this->equalTo('handler_not_submitted_data'), $this->equalTo(null)]
-            )
-            ->will($this->onConsecutiveCalls(false, 'my_fake_handler_not_submitted_data'));
+            ->with($this->equalTo('handler_not_submitted'), $this->equalTo(false))
+            ->willReturn('my_fake_handler_not_submitted_data');
 
         $this->assertEquals('my_fake_handler_not_submitted_data', $this->formHandler->handleRequest($this->formMock, 'my_fake_request'));
     }
@@ -108,6 +113,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequestThrowInvalidFormException()
     {
         $this->formMock->expects($this->once())
+            ->method('handleRequest')
+            ->with('my_fake_request');
+
+        $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('isSubmitted')
             ->willReturn(true);
 
@@ -115,13 +128,9 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('isValid')
             ->willReturn(false);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
         $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->with($this->equalTo('handler_invalid_fatal'), $this->equalTo(false))
+            ->with($this->equalTo('handler_invalid'), $this->equalTo(false))
             ->willReturn(true);
 
         $this->formHandler->handleRequest($this->formMock, 'my_fake_request');
@@ -130,6 +139,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequestInvalid()
     {
         $this->formMock->expects($this->once())
+            ->method('handleRequest')
+            ->with('my_fake_request');
+
+        $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('isSubmitted')
             ->willReturn(true);
 
@@ -137,25 +154,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('isValid')
             ->willReturn(false);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
         $this->formConfigMock->expects($this->once())
-            ->method('hasOption')
-            ->with($this->equalTo('handler_invalid_data'))
-            ->willReturn(true);
-
-        $this->formConfigMock->expects($this->exactly(2))
             ->method('getOption')
-            ->withConsecutive(
-                [$this->equalTo('handler_invalid_fatal'), $this->equalTo(false)],
-                [$this->equalTo('handler_invalid_data'), $this->equalTo(null)]
-            )
-            ->will($this->onConsecutiveCalls(
-                false,
-                'my_fake_handler_invalid_data'
-            ));
+            ->with($this->equalTo('handler_invalid'), $this->equalTo(false))
+            ->willReturn('my_fake_handler_invalid_data');
+
+        $this->formMock->expects($this->once())
+            ->method('getTransformationFailure')
+            ->willReturn(false);
 
         $this->assertEquals('my_fake_handler_invalid_data', $this->formHandler->handleRequest($this->formMock, 'my_fake_request'));
     }
@@ -167,6 +173,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequestThrowTransformationFailedFormException()
     {
         $this->formMock->expects($this->once())
+            ->method('handleRequest')
+            ->with('my_fake_request');
+
+        $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('isSubmitted')
             ->willReturn(true);
 
@@ -174,17 +188,19 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('isValid')
             ->willReturn(true);
 
+        $this->formConfigMock->expects($this->exactly(2))
+            ->method('getOption')
+            ->withConsecutive(
+                [$this->equalTo('handler_invalid'), $this->equalTo(false)],
+                [$this->equalTo('handler_transformation_failed'), $this->equalTo(false)]
+            )
+            ->will($this->onConsecutiveCalls(
+                'useless value in this case',
+                true
+            ));
+
         $this->formMock->expects($this->once())
             ->method('getTransformationFailure')
-            ->willReturn(true);
-
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
-        $this->formConfigMock->expects($this->once())
-            ->method('getOption')
-            ->with($this->equalTo('handler_transformation_failed_fatal'), $this->equalTo(false))
             ->willReturn(true);
 
         $this->formHandler->handleRequest($this->formMock, 'my_fake_request');
@@ -193,31 +209,31 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequestTransformationFailed()
     {
         $this->formMock->expects($this->once())
-            ->method('isSubmitted')
-            ->willReturn(true);
-
-        $this->formMock->expects($this->once())
-            ->method('isValid')
-            ->willReturn(true);
-
-        $this->formMock->expects($this->once())
-            ->method('getTransformationFailure')
-            ->willReturn(true);
+            ->method('handleRequest')
+            ->with('my_fake_request');
 
         $this->formMock->expects($this->once())
             ->method('getConfig')
             ->willReturn($this->formConfigMock);
 
+        $this->formMock->expects($this->once())
+            ->method('isSubmitted')
+            ->willReturn(true);
+
         $this->formConfigMock->expects($this->exactly(2))
             ->method('getOption')
             ->withConsecutive(
-                [$this->equalTo('handler_transformation_failed_fatal'), $this->equalTo(false)],
-                [$this->equalTo('handler_transformation_failed_data'), $this->equalTo(null)]
+                [$this->equalTo('handler_invalid'), $this->equalTo(false)],
+                [$this->equalTo('handler_transformation_failed'), $this->equalTo(false)]
             )
             ->will($this->onConsecutiveCalls(
-                false,
+                'useless value in this case',
                 'my_fake_handler_transformation_failed_data'
             ));
+
+        $this->formMock->expects($this->once())
+            ->method('getTransformationFailure')
+            ->willReturn(true);
 
         $this->assertEquals('my_fake_handler_transformation_failed_data', $this->formHandler->handleRequest($this->formMock, 'my_fake_request'));
     }
@@ -225,54 +241,28 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRequest()
     {
         $this->formMock->expects($this->once())
-            ->method('isSubmitted')
-            ->willReturn(true);
-
-        $this->formMock->expects($this->once())
-            ->method('isValid')
-            ->willReturn(true);
-
-        $this->formMock->expects($this->once())
-            ->method('getTransformationFailure')
-            ->willReturn(false);
+            ->method('handleRequest')
+            ->with('my_fake_request');
 
         $this->formMock->expects($this->once())
             ->method('getConfig')
             ->willReturn($this->formConfigMock);
 
         $this->formMock->expects($this->once())
-            ->method('getData')
-            ->willReturn('my_fake_form_data');
-
-        $this->assertEquals('my_fake_form_data', $this->formHandler->handleRequest($this->formMock, 'my_fake_request'));
-    }
-
-    public function testHandleRequestInvalidFormWithoutInvalidFormExtension()
-    {
-        $this->formMock->expects($this->once())
             ->method('isSubmitted')
             ->willReturn(true);
 
         $this->formMock->expects($this->once())
             ->method('isValid')
-            ->willReturn(false);
-
-        $this->formMock->expects($this->once())
-            ->method('getTransformationFailure')
-            ->willReturn(false);
-
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
+            ->willReturn(true);
 
         $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->with($this->equalTo('handler_invalid_fatal'), $this->equalTo(false))
-            ->willReturn(false);
+            ->with($this->equalTo('handler_invalid'), $this->equalTo(false))
+            ->willReturn('useless value in this case');
 
-        $this->formConfigMock->expects($this->once())
-            ->method('hasOption')
-            ->with($this->equalTo('handler_invalid_data'))
+        $this->formMock->expects($this->once())
+            ->method('getTransformationFailure')
             ->willReturn(false);
 
         $this->formMock->expects($this->once())
@@ -289,6 +279,10 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleDataThrowNotSubmittedFormException()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
@@ -296,13 +290,9 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('all')
             ->willReturn([]);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
         $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->with($this->equalTo('handler_not_submitted_fatal'), $this->equalTo(false))
+            ->with($this->equalTo('handler_not_submitted'), $this->equalTo(false))
             ->willReturn(true);
 
         $this->formHandler->handleData($this->formMock, ['my_fake_request']);
@@ -311,6 +301,10 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleDataNotSubmitted()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
@@ -318,17 +312,10 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('all')
             ->willReturn([]);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
-        $this->formConfigMock->expects($this->exactly(2))
+        $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->withConsecutive(
-                [$this->equalTo('handler_not_submitted_fatal'), $this->equalTo(false)],
-                [$this->equalTo('handler_not_submitted_data'), $this->equalTo(null)]
-            )
-            ->will($this->onConsecutiveCalls(false, 'my_fake_handler_not_submitted_data'));
+            ->with($this->equalTo('handler_not_submitted'), $this->equalTo(false))
+            ->willReturn('my_fake_handler_not_submitted_data');
 
         $this->assertEquals('my_fake_handler_not_submitted_data', $this->formHandler->handleData($this->formMock, ['my_fake_request']));
     }
@@ -340,6 +327,10 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleDataThrowInvalidFormException()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
@@ -348,24 +339,28 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['my_fake_key' => 'my_fake_form_value']);
 
         $this->formMock->expects($this->once())
+            ->method('submit')
+            ->with(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
+
+        $this->formMock->expects($this->once())
             ->method('isValid')
             ->willReturn(false);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
         $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->with($this->equalTo('handler_invalid_fatal'), $this->equalTo(false))
+            ->with($this->equalTo('handler_invalid'), $this->equalTo(false))
             ->willReturn(true);
 
-        $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value']);
+        $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
     }
 
     public function testHandleDataInvalid()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
@@ -374,34 +369,23 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['my_fake_key' => 'my_fake_form_value']);
 
         $this->formMock->expects($this->once())
+            ->method('submit')
+            ->with(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
+
+        $this->formMock->expects($this->once())
             ->method('isValid')
             ->willReturn(false);
 
-        $this->formMock->expects($this->once())
-            ->method('submit')
-            ->with($this->equalTo(['my_fake_key' => 'my_fake_request_value']), $this->equalTo(true));
-
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
         $this->formConfigMock->expects($this->once())
-            ->method('hasOption')
-            ->with($this->equalTo('handler_invalid_data'))
-            ->willReturn(true);
-
-        $this->formConfigMock->expects($this->exactly(2))
             ->method('getOption')
-            ->withConsecutive(
-                [$this->equalTo('handler_invalid_fatal'), $this->equalTo(false)],
-                [$this->equalTo('handler_invalid_data'), $this->equalTo(null)]
-            )
-            ->will($this->onConsecutiveCalls(
-                false,
-                'my_fake_handler_invalid_data'
-            ));
+            ->with($this->equalTo('handler_invalid'), $this->equalTo(false))
+            ->willReturn('my_fake_handler_invalid_data');
 
-        $this->assertEquals('my_fake_handler_invalid_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value']));
+        $this->formMock->expects($this->once())
+            ->method('getTransformationFailure')
+            ->willReturn(false);
+
+        $this->assertEquals('my_fake_handler_invalid_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing'));
     }
 
     /**
@@ -411,6 +395,10 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleDataThrowTransformationFailedFormException()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
@@ -419,28 +407,38 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['my_fake_key' => 'my_fake_form_value']);
 
         $this->formMock->expects($this->once())
+            ->method('submit')
+            ->with(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
+
+        $this->formMock->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
+
+        $this->formConfigMock->expects($this->exactly(2))
+            ->method('getOption')
+            ->withConsecutive(
+                [$this->equalTo('handler_invalid'), $this->equalTo(false)],
+                [$this->equalTo('handler_transformation_failed'), $this->equalTo(false)]
+            )
+            ->will($this->onConsecutiveCalls(
+                'my_fake_handler_invalid_data',
+                true
+            ));
 
         $this->formMock->expects($this->once())
             ->method('getTransformationFailure')
             ->willReturn(true);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
-        $this->formConfigMock->expects($this->once())
-            ->method('getOption')
-            ->with($this->equalTo('handler_transformation_failed_fatal'), $this->equalTo(false))
-            ->willReturn(true);
-
-        $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value']);
+        $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
     }
 
     public function testHandleDataTransformationFailed()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
@@ -449,96 +447,66 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(['my_fake_key' => 'my_fake_form_value']);
 
         $this->formMock->expects($this->once())
+            ->method('submit')
+            ->with(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
+
+        $this->formMock->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
+
+        $this->formConfigMock->expects($this->exactly(2))
+            ->method('getOption')
+            ->withConsecutive(
+                [$this->equalTo('handler_invalid'), $this->equalTo(false)],
+                [$this->equalTo('handler_transformation_failed'), $this->equalTo(false)]
+            )
+            ->will($this->onConsecutiveCalls(
+                'my_fake_handler_invalid_data',
+                'my_fake_handler_transformation_failed_data'
+            ));
 
         $this->formMock->expects($this->once())
             ->method('getTransformationFailure')
             ->willReturn(true);
 
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
-        $this->formConfigMock->expects($this->exactly(2))
-            ->method('getOption')
-            ->withConsecutive(
-                [$this->equalTo('handler_transformation_failed_fatal'), $this->equalTo(false)],
-                [$this->equalTo('handler_transformation_failed_data'), $this->equalTo(null)]
-            )
-            ->will($this->onConsecutiveCalls(
-                false,
-                'my_fake_handler_transformation_failed_data'
-            ));
-
-        $this->assertEquals('my_fake_handler_transformation_failed_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value']));
+        $this->assertEquals('my_fake_handler_transformation_failed_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing'));
     }
 
     public function testHandleData()
     {
         $this->formMock->expects($this->once())
+            ->method('getConfig')
+            ->willReturn($this->formConfigMock);
+
+        $this->formMock->expects($this->once())
             ->method('getName')
             ->willReturn('');
 
         $this->formMock->expects($this->once())
             ->method('all')
             ->willReturn(['my_fake_key' => 'my_fake_form_value']);
+
+        $this->formMock->expects($this->once())
+            ->method('submit')
+            ->with(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
 
         $this->formMock->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
 
-        $this->formMock->expects($this->once())
-            ->method('getTransformationFailure')
-            ->willReturn(false);
-
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
-        $this->formMock->expects($this->once())
-            ->method('getData')
-            ->willReturn('my_fake_form_data');
-
-        $this->assertEquals('my_fake_form_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value']));
-    }
-
-    public function testHandleDataInvalidFormWithoutInvalidFormExtension()
-    {
-        $this->formMock->expects($this->once())
-            ->method('getName')
-            ->willReturn('');
-
-        $this->formMock->expects($this->once())
-            ->method('all')
-            ->willReturn(['my_fake_key' => 'my_fake_form_value']);
-
-        $this->formMock->expects($this->once())
-            ->method('isValid')
-            ->willReturn(false);
-
-        $this->formMock->expects($this->once())
-            ->method('getTransformationFailure')
-            ->willReturn(false);
-
-        $this->formMock->expects($this->once())
-            ->method('getConfig')
-            ->willReturn($this->formConfigMock);
-
         $this->formConfigMock->expects($this->once())
             ->method('getOption')
-            ->with($this->equalTo('handler_invalid_fatal'), $this->equalTo(false))
-            ->willReturn(false);
+            ->with($this->equalTo('handler_invalid'), $this->equalTo(false))
+            ->willReturn('useless value in this case');
 
-        $this->formConfigMock->expects($this->once())
-            ->method('hasOption')
-            ->with($this->equalTo('handler_invalid_data'))
+        $this->formMock->expects($this->once())
+            ->method('getTransformationFailure')
             ->willReturn(false);
 
         $this->formMock->expects($this->once())
             ->method('getData')
             ->willReturn('my_fake_form_data');
 
-        $this->assertEquals('my_fake_form_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value']));
+        $this->assertEquals('my_fake_form_data', $this->formHandler->handleData($this->formMock, ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing'));
     }
 }
