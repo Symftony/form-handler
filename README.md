@@ -24,9 +24,14 @@ require 'vendor/autoload.php';
 ## Documentation
 
 This bundle provide a build in FormHandler and TypeExtension.
+
 The TypeExtension add options to the Symfony FormType
 
+- handler_invalid = true to throw InvalidFormException
+- handler_not_submitted = true to throw NotSubmittedFormException
+- handler_transformation_failed = true to throw TransformationFailedFormException
 
+> If you set a data instead of true in this option the FormHandler::handle return it if the case append
 
 ## Use in Symfony
 
@@ -104,7 +109,6 @@ class YourFormHandler extends FormHandler
 
 Declare as a service 
 
-```
 
 ```yaml
 services:
