@@ -16,13 +16,14 @@ $formHandler->setFormFactory(Forms::createFormFactory());
 $form = $formHandler->createForm(TextType::class, 'my-value', 'My default data', ['method' => 'GET']);
 
 // Handler request
-$formHandler->handleRequest($form);
+$result = $formHandler->handleRequest($form);
 ?>
 <html>
 <head>
     <title>Form handler example</title>
 </head>
 <body>
+<div>$formHandler->handleRequest($form) : <?= isset($result) ? $result : 'Not initialize'; ?></div>
 <div>$form->isSubmitted() : <?= $form->isSubmitted() ? 'true' : 'false'; ?></div>
 <div>$form->isValid() : <?= $form->isValid() ? 'true' : 'false'; ?></div>
 <div>$form->getData() : <?= $form->getData(); ?></div>

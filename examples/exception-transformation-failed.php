@@ -36,7 +36,7 @@ $form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
 // Handle request
 $exception = null;
 try {
-    $formHandler->handleRequest($form);
+    $result = $formHandler->handleRequest($form);
 } catch (FormException $e) {
     $exception = $e;
 }
@@ -57,6 +57,7 @@ try {
         null
     <?php endif ?>
 </div>
+<div>$formHandler->handleRequest($form) : <?= isset($result) ? $result : 'Not initialize'; ?></div>
 <div>$form->isSubmitted() : <?= $form->isSubmitted() ? 'true' : 'false'; ?></div>
 <div>$form->isValid() : <?= $form->isValid() ? 'true' : 'false'; ?></div>
 <div>$form->getData() : <?= json_encode($form->getData()); ?></div>
