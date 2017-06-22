@@ -63,9 +63,9 @@ try {
 <form method="GET">
     <label>My value
         <select name="my-value">
-            <option value="foo">FOO</option>
-            <option value="bar">BAR</option>
-            <option value="baz">BAZ (invalid choice)</option>
+            <option value="FOO">FOO</option>
+            <option value="BAR">BAR</option>
+            <option value="BAZ">BAZ (invalid choice)</option>
         </select></label>
     <input type="submit">
     <a href="exception-transformation-failed.php">Reset form</a>
