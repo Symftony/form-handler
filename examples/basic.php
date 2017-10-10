@@ -20,18 +20,26 @@ $result = $formHandler->handleRequest($form);
 ?>
 <html>
 <head>
-    <title>Form handler example</title>
+    <title>Form handler Basic</title>
 </head>
 <body>
-<div>$formHandler->handleRequest($form) : <?= isset($result) ? $result : 'Not initialize'; ?></div>
-<div>$form->isSubmitted() : <?= $form->isSubmitted() ? 'true' : 'false'; ?></div>
-<div>$form->isValid() : <?= $form->isValid() ? 'true' : 'false'; ?></div>
-<div>$form->getData() : <?= $form->getData(); ?></div>
-<form method="GET">
-    <label>My value
-        <input name="my-value"/></label>
-    <input type="submit">
-</form>
 <?php include 'menu.php'; ?>
+<div class="container">
+    <h1>Form handler Basic</h1>
+    <div class="content">
+        <form method="GET">
+            <label>My value
+                <input name="my-value"/></label>
+            <input type="submit">
+            <a href="basic.php">Reset form</a>
+        </form>
+        <div class="formdebug">
+            <code>$form->isSubmitted() : <?= var_export($form->isSubmitted()) ?></code>
+            <code>$form->isValid() : <?= var_export($form->isValid()) ?></code>
+            <code>$form->getData() : <?= var_export($form->getData()); ?></code>
+            <code>$formHandler->handleRequest($form) : <?= var_export($result); ?></code>
+        </div>
+    </div>
+</div>
 </body>
 </html>

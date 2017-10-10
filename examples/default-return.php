@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Validation;
 $formFactory = Forms::createFormFactoryBuilder()
     ->addTypeExtension(new NotSubmittedTypeExtension())
     ->addTypeExtension(new InvalidTypeExtension())
+    ->addTypeExtension(new TransformationFailedTypeExtension())
     ->addExtension(new ValidatorExtension(Validation::createValidator()))
     ->getFormFactory();
 
@@ -41,8 +42,9 @@ $form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
             'FOO',
         ]
     ]),
-    'handler_invalid' => true,
-    'handler_not_submitted' => true,
+    'handler_invalid' => 'invalid return data',
+    'handler_not_submitted' => 'not submitted return data',
+    'handler_transformation_failed' => 'transformation fail return data',
 ]);
 
 // Handle request
@@ -60,12 +62,12 @@ try {
 <body>
 <?php include 'menu.php'; ?>
 <div class="container">
-    <h1>Form handler will throw NotSubmitted/Invalid exception</h1>
+    <h1>Form handler will return default data when exception append</h1>
     <div class="content">
-        <p>Form handler throw an exception when the form is not submitted or tansformation failed or Invalid.</p>
+        <p>Form handler will return configured default data when not submit/invalid form</p>
         <p>FOO choice : the form handler will return 'FOO' ($form->getData())</p>
-        <p>BAR choice : exist in the form but not allowed by the constraint, so the form handler will throw InvalidFormException</p>
-        <p>BAZ choice not exist in form choice so the form will Throw InvalidFormException because the validator extension change the transformationFailure into a Constraint violation</p>
+        <p>BAR choice : the form handler will return 'invalid return data'</p>
+        <p>BAZ choice : the form handler will return 'invalid return data'</p>
         <p class="important">/!\ The "ValidatorExtension" is added to the FormFactory, so the Transformation failed
             become a constraint violation and the InvalidFormException was throw before the
             TransformationFailedException /!\</p>

@@ -1,8 +1,85 @@
-<div style="padding: 10px;position:absolute;bottom: 0;left: 0;right: 0;;background-color: #b2b2b2">
-    <a href="basic.php">Basic</a> |
-    <a href="exception.php">Exception</a> |
-    <a href="exception-with-validator.php">Exception with ValidatorExtension</a> |
-    <a href="exception-invalid.php">Invalid Exception</a> |
-    <a href="exception-not-submitted.php">Not submitted Exception</a> |
-    <a href="exception-transformation-failed.php">Transformation Exception</a>
+<div class="head">
+    <div class="container">
+        <a href="basic.php">Basic</a>
+        <a href="exception.php">Exception</a>
+        <a href="exception-with-validator.php">Exception with ValidatorExtension</a>
+        <a href="default-return.php">Default return</a>
+    </div>
 </div>
+<style>
+    .container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 980px;
+    }
+
+    code {
+        display: inherit;
+    }
+
+    .head {
+        padding-top: 20px;
+        border-bottom: 1px solid rgb(225, 228, 232);
+        background-color: rgb(250, 251, 252);
+    }
+
+    .head a {
+        text-decoration: none;
+        color: #000000;
+        display: inline-block;
+        padding: 10px;
+        border-top: 1px solid rgb(225, 228, 232);
+        border-left: 1px solid rgb(225, 228, 232);
+        border-right: 1px solid rgb(225, 228, 232);
+        background-color: #ffffff;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .content {
+        margin-top: 20px;
+        border: 1px solid rgb(207, 216, 230);
+        border-radius: 5px;
+        background-color: rgb(237, 243, 250);
+        padding: 0 20px;
+    }
+
+    .content > * {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .important {
+        border: 1px solid #faf7a5;
+        background-color: #faf8b9;
+    }
+
+    .warning {
+        border: 1px solid #ffb566;
+        background-color: #ffcf99;
+    }
+
+    .error {
+        border: 1px solid #ffb3b3;
+        background-color: #ffcccc;
+    }
+
+    form {
+        border: 1px solid #bebebe;
+        padding: 10px;
+        margin-bottom: 0;
+    }
+
+    .formdebug {
+        background-color: #ffffff;
+        border: 1px dashed #e48706;
+        padding: 10px;
+    }
+
+    .formdebug .important,
+    .formdebug .warning,
+    .formdebug .error {
+        border-radius: 5px;
+        padding: 1px 6px;
+    }
+</style>
+
