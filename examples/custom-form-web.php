@@ -3,14 +3,11 @@
 namespace Example;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
-use Symfony\Component\Validator\Constraints\Choice;
+require_once 'CustomFormHandler.php';
 use Symftony\FormHandler\Exception\FormException;
 use Symftony\FormHandler\Form\Extension\Invalid\Type\InvalidTypeExtension;
 use Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
 use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
-use Symftony\FormHandler\FormHandler;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Validator\Validation;
@@ -27,26 +24,11 @@ $formFactory = Forms::createFormFactoryBuilder()
     ->getFormFactory();
 
 // Initialize form handler
-$formHandler = new FormHandler();
+$formHandler = new CustomFormHandler();
 $formHandler->setFormFactory($formFactory);
 
 // Create the form
-$form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
-    'method' => 'GET',
-    'choices' => [
-        'FOO' => 'FOO',
-        'BAR' => 'BAR  (invalid choice)',
-    ],
-    'constraints' => new Choice([
-        'choices' => [
-            'FOO',
-        ]
-    ]),
-    'handler_invalid' => 'invalid return data',
-    'handler_not_submitted' => 'not submitted return data',
-    'handler_transformation_failed' => 'transformation fail return data',
-]);
-
+$form = $formHandler->formChoice();
 // Handle request
 $exception = null;
 try {
@@ -81,7 +63,7 @@ try {
                     <option value="BAZ">BAZ (transformation fail choice)</option>
                 </select></label>
             <input type="submit">
-            <a href="default-return.php">Reset form</a>
+            <a href="custom-form-web.php">Reset form</a>
         </form>
 
         <div class="formdebug">

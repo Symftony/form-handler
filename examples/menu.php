@@ -4,6 +4,8 @@
         <a href="exception.php">Exception</a>
         <a href="exception-with-validator.php">Exception with ValidatorExtension</a>
         <a href="default-return.php">Default return</a>
+        <a href="custom-form-web.php">Custom handler web</a>
+        <a href="custom-form-api.php">Custom handler API</a>
     </div>
 </div>
 <style>

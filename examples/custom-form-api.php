@@ -3,14 +3,11 @@
 namespace Example;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
-use Symfony\Component\Validator\Constraints\Choice;
+require_once 'CustomFormHandler.php';
 use Symftony\FormHandler\Exception\FormException;
 use Symftony\FormHandler\Form\Extension\Invalid\Type\InvalidTypeExtension;
 use Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
 use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
-use Symftony\FormHandler\FormHandler;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Validator\Validation;
@@ -27,30 +24,14 @@ $formFactory = Forms::createFormFactoryBuilder()
     ->getFormFactory();
 
 // Initialize form handler
-$formHandler = new FormHandler();
+$formHandler = new CustomFormHandler();
 $formHandler->setFormFactory($formFactory);
 
 // Create the form
-$form = $formHandler->createForm(ChoiceType::class, 'my-value', null, [
-    'method' => 'GET',
-    'choices' => [
-        'FOO' => 'FOO',
-        'BAR' => 'BAR  (invalid choice)',
-    ],
-    'constraints' => new Choice([
-        'choices' => [
-            'FOO',
-        ]
-    ]),
-    'handler_invalid' => 'invalid return data',
-    'handler_not_submitted' => 'not submitted return data',
-    'handler_transformation_failed' => 'transformation fail return data',
-]);
-
 // Handle request
 $exception = null;
 try {
-    $result = $formHandler->handleRequest($form);
+    $result = $formHandler->createFromRequest();
 } catch (FormException $e) {
     $exception = $e;
 }
@@ -64,10 +45,10 @@ try {
 <div class="container">
     <h1>Form handler will return default data when exception append</h1>
     <div class="content">
-        <p>Form handler will return configured default data when not submit/invalid form</p>
+        <p>Form handler will throw not submit/invalid form</p>
         <p>FOO choice : the form handler will return 'FOO' ($form->getData())</p>
-        <p>BAR choice : the form handler will return 'invalid return data'</p>
-        <p>BAZ choice : the form handler will return 'invalid return data'</p>
+        <p>BAR choice : the form handler will throw InvalidFormException</p>
+        <p>BAZ choice : the form handler will throw InvalidFormException</p>
         <p class="important">/!\ The "ValidatorExtension" is added to the FormFactory, so the Transformation failed
             become a constraint violation and the InvalidFormException was throw before the
             TransformationFailedException /!\</p>
@@ -81,20 +62,11 @@ try {
                     <option value="BAZ">BAZ (transformation fail choice)</option>
                 </select></label>
             <input type="submit">
-            <a href="default-return.php">Reset form</a>
+            <a href="custom-form-api.php">Reset form</a>
         </form>
 
+        <p class="important">/!\ When you use the handler to do some API you dont need the form in your controller. You just need your data or Exception /!\</p>
         <div class="formdebug">
-            <code>$form->isSubmitted() : <?= var_export($form->isSubmitted()) ?></code>
-            <code>$form->isValid() : <?= var_export($form->isValid()) ?></code>
-            <code>$form->getTransformationFailure() :
-                <?php if ($form->getTransformationFailure()): ?>
-                    <span class="warning"><?= $form->getTransformationFailure()->getMessage(); ?></span>
-                <?php else: ?>
-                    null
-                <?php endif ?>
-            </code>
-            <code>$form->getData() : <?= var_export($form->getData()); ?></code>
             <code>$formHandler->handleRequest($form) : <?php if (isset($result)) var_export($result); ?>
                 <?php if (null !== $exception): ?>
                     <span class="error"><?= get_class($exception) . ' : ' . $exception->getMessage() ?></span>
