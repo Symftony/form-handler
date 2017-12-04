@@ -1,6 +1,6 @@
 <div class="head">
     <div class="container">
-        <a href="basic.php">Basic</a>
+        <a href="index.php">Basic</a>
         <a href="exception.php">Exception</a>
         <a href="exception-with-validator.php">Exception with ValidatorExtension</a>
         <a href="default-return.php">Default return</a>
