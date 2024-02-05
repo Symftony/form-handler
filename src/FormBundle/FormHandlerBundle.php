@@ -15,7 +15,7 @@ class FormHandlerBundle extends Bundle
     /**
      * @param ContainerBuilder $container
      */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new FormHandlerCompilerPass());
     }

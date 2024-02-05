@@ -68,7 +68,7 @@ try {
 
         <div class="formdebug">
             <code>$form->isSubmitted() : <?= var_export($form->isSubmitted()) ?></code>
-            <code>$form->isValid() : <?= var_export($form->isValid()) ?></code>
+            <code>$form->isValid() : <?= $form->isSubmitted() &&var_export($form->isValid()) ?></code>
             <code>$form->getTransformationFailure() :
                 <?php if ($form->getTransformationFailure()): ?>
                     <span class="warning"><?= $form->getTransformationFailure()->getMessage(); ?></span>

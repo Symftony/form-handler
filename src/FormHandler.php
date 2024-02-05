@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler;
 
@@ -10,15 +11,9 @@ use Symfony\Component\Form\FormInterface;
 
 class FormHandler
 {
-    /**
-     * @var FormFactoryInterface
-     */
-    protected $formFactory;
+    protected FormFactoryInterface $formFactory;
 
-    /**
-     * @param FormFactoryInterface $formFactory
-     */
-    public function setFormFactory(FormFactoryInterface $formFactory)
+    public function setFormFactory(FormFactoryInterface $formFactory): void
     {
         $this->formFactory = $formFactory;
     }
@@ -31,7 +26,7 @@ class FormHandler
      *
      * @return FormInterface
      */
-    public function createForm($type, $name = null, $data = null, $options = [])
+    public function createForm(string $type, $name = null, $data = null, array $options = []): FormInterface
     {
         if (null !== $name) {
             return $this->formFactory->createNamed($name, $type, $data, $options);
@@ -48,7 +43,7 @@ class FormHandler
      *
      * @throws mixed
      */
-    public function handleRequest(FormInterface $form, $request = null)
+    public function handleRequest(FormInterface $form, $request = null): mixed
     {
         $form->handleRequest($request);
         $formConfig = $form->getConfig();
@@ -62,25 +57,7 @@ class FormHandler
             return $notSubmitted;
         }
 
-        if (!$form->isValid() && $formConfig->hasOption('handler_invalid')) {
-            $invalid = $formConfig->getOption('handler_invalid');
-            if (true === $invalid) {
-                throw new InvalidFormException($form);
-            }
-
-            return $invalid;
-        }
-
-        if ($form->getTransformationFailure() && $formConfig->hasOption('handler_transformation_failed')) {
-            $failed = $formConfig->getOption('handler_transformation_failed');
-            if (true === $failed) {
-                throw new TransformationFailedFormException($form);
-            }
-
-            return $failed;
-        }
-
-        return $form->getData();
+        return $this->postSubmit($form);
     }
 
     /**
@@ -90,7 +67,7 @@ class FormHandler
      *
      * @return mixed|null
      */
-    public function handleData(FormInterface $form, array $data = [], $clearMissing = true)
+    public function handleData(FormInterface $form, array $data = [], bool $clearMissing = true): mixed
     {
         $formConfig = $form->getConfig();
         // Don't auto-submit the form unless at least one field is present.
@@ -105,22 +82,31 @@ class FormHandler
 
         $form->submit($data, $clearMissing);
 
-        if (!$form->isValid() && $formConfig->hasOption('handler_invalid')) {
-            $invalid = $formConfig->getOption('handler_invalid');
-            if (true === $invalid) {
-                throw new InvalidFormException($form);
+        return $this->postSubmit($form);
+    }
+
+    private function postSubmit(FormInterface $form,)
+    {
+        $formConfig = $form->getConfig();
+        if ($form->isSubmitted()) {
+            if (!$form->isValid() && $formConfig->hasOption('handler_invalid')) {
+                $invalid = $formConfig->getOption('handler_invalid');
+                if (true === $invalid) {
+                    throw new InvalidFormException($form);
+                }
+
+                return $invalid;
             }
 
-            return $invalid;
-        }
+            $transformationFailure = $form->getTransformationFailure();
+            if ($transformationFailure && $formConfig->hasOption('handler_transformation_failed')) {
+                $failed = $formConfig->getOption('handler_transformation_failed');
+                if (true === $failed) {
+                    throw new TransformationFailedFormException($form, 'Transformation form failed.', 0, $transformationFailure);
+                }
 
-        if ($form->getTransformationFailure() && $formConfig->hasOption('handler_transformation_failed')) {
-            $failed = $formConfig->getOption('handler_transformation_failed');
-            if (true === $failed) {
-                throw new TransformationFailedFormException($form);
+                return $failed;
             }
-
-            return $failed;
         }
 
         return $form->getData();

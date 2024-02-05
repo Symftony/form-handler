@@ -1,42 +1,44 @@
 <?php
+declare(strict_types=1);
 
-namespace Symftony\FormHandler\Tests\Form\Extension\Invalid\Type;
+namespace Symftony\FormHandler\Tests\Form\Extension\TransformationFailed\Type;
 
-use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symftony\FormHandler\Form\Extension\TransformationFailed\Type\TransformationFailedTypeExtension;
 
-class TransformationFailedTypeExtensionTest extends \PHPUnit_Framework_TestCase
+class TransformationFailedTypeExtensionTest extends TestCase
 {
-    /**
-     * @var OptionsResolver
-     */
-    private $optionsResolverMock;
+    use ProphecyTrait;
 
-    /**
-     * @var TransformationFailedTypeExtension
-     */
-    private $transformationFailedTypeExtension;
+    private OptionsResolver|ObjectProphecy $optionsResolverMock;
 
-    public function setUp()
+    private TransformationFailedTypeExtension $notSubmittedTypeExtension;
+
+    public function setUp(): void
     {
-        $this->optionsResolverMock = $this->getMock(OptionsResolver::class);
+        $this->optionsResolverMock = $this->prophesize(OptionsResolver::class);
 
-        $this->transformationFailedTypeExtension = new TransformationFailedTypeExtension();
+        $this->notSubmittedTypeExtension = new TransformationFailedTypeExtension();
     }
 
     public function testConfigureOptions()
     {
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setDefaults')
-            ->with($this->equalTo([
+        $this->optionsResolverMock
+            ->setDefaults([
                 'handler_transformation_failed' => false,
-            ]));
+            ])
+            ->willReturn($this->optionsResolverMock->reveal())
+            ->shouldBeCalled();
 
-        $this->transformationFailedTypeExtension->configureOptions($this->optionsResolverMock);
+        $this->notSubmittedTypeExtension->configureOptions($this->optionsResolverMock->reveal());
     }
 
     public function testGetExtendedType()
     {
-        $this->assertEquals('Symfony\Component\Form\Extension\Core\Type\FormType', $this->transformationFailedTypeExtension->getExtendedType());
+        $this->assertEquals([FormType::class], $this->notSubmittedTypeExtension->getExtendedTypes());
     }
 }

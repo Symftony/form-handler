@@ -1,42 +1,44 @@
 <?php
+declare(strict_types=1);
 
-namespace Symftony\FormHandler\Tests\Form\Extension\Invalid\Type;
+namespace Symftony\FormHandler\Tests\Form\Extension\NotSubmitted\Type;
 
-use Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symftony\FormHandler\Form\Extension\NotSubmitted\Type\NotSubmittedTypeExtension;
 
-class NotSubmittedTypeExtensionTest extends \PHPUnit_Framework_TestCase
+class NotSubmittedTypeExtensionTest extends TestCase
 {
-    /**
-     * @var OptionsResolver
-     */
-    private $optionsResolverMock;
+    use ProphecyTrait;
 
-    /**
-     * @var NotSubmittedTypeExtension
-     */
-    private $notSubmittedTypeExtension;
+    private OptionsResolver|ObjectProphecy $optionsResolverMock;
 
-    public function setUp()
+    private NotSubmittedTypeExtension $notSubmittedTypeExtension;
+
+    public function setUp(): void
     {
-        $this->optionsResolverMock = $this->getMock(OptionsResolver::class);
+        $this->optionsResolverMock = $this->prophesize(OptionsResolver::class);
 
         $this->notSubmittedTypeExtension = new NotSubmittedTypeExtension();
     }
 
     public function testConfigureOptions()
     {
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setDefaults')
-            ->with($this->equalTo([
+        $this->optionsResolverMock
+            ->setDefaults([
                 'handler_not_submitted' => false,
-            ]));
+            ])
+            ->willReturn($this->optionsResolverMock->reveal())
+            ->shouldBeCalled();
 
-        $this->notSubmittedTypeExtension->configureOptions($this->optionsResolverMock);
+        $this->notSubmittedTypeExtension->configureOptions($this->optionsResolverMock->reveal());
     }
 
     public function testGetExtendedType()
     {
-        $this->assertEquals('Symfony\Component\Form\Extension\Core\Type\FormType', $this->notSubmittedTypeExtension->getExtendedType());
+        $this->assertEquals([FormType::class], $this->notSubmittedTypeExtension->getExtendedTypes());
     }
 }

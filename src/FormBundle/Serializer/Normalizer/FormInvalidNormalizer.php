@@ -1,5 +1,6 @@
 <?php
 /*
+ * https://github.com/FriendsOfSymfony/FOSRestBundle/blob/3.x/Serializer/Normalizer/FormErrorNormalizer.php
  * This file is part of the FOSRestBundle package.
  *
  * (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
@@ -7,52 +8,41 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Symftony\FormHandler\FormBundle\Serializer\Normalizer;
 
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Normalizes invalid Form instances.
  *
  * @author Ener-Getick <egetick@gmail.com>
+ *
  * @codeCoverageIgnore
  */
 class FormInvalidNormalizer implements NormalizerInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    )
     {
-        $this->translator = $translator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function normalize($object, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null): bool
+    {
+        return $data instanceof FormInterface && $data->isSubmitted() && !$data->isValid();
+    }
+
+    public function normalize($object, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         return [
-            'code' => isset($context['status_code']) ? $context['status_code'] : null,
+            'code' => $context['status_code'] ?? null,
             'message' => 'Validation Failed',
             'errors' => $this->convertFormToArray($object),
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof FormInterface && $data->isSubmitted() && !$data->isValid();
     }
 
     /**
@@ -62,7 +52,7 @@ class FormInvalidNormalizer implements NormalizerInterface
      *
      * @return array
      */
-    private function convertFormToArray(FormInterface $data)
+    private function convertFormToArray(FormInterface $data): array
     {
         $form = $errors = [];
         foreach ($data->getErrors() as $error) {
@@ -95,4 +85,5 @@ class FormInvalidNormalizer implements NormalizerInterface
         }
         return $this->translator->trans($error->getMessageTemplate(), $error->getMessageParameters(), 'validators');
     }
+
 }

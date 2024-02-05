@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler\Exception;
 
@@ -10,13 +11,7 @@ use Symfony\Component\Form\FormInterface;
  */
 class TransformationFailedFormException extends FormException
 {
-    /**
-     * @param FormInterface $form
-     * @param string $message
-     * @param int $code
-     * @param \Exception|null $previous
-     */
-    public function __construct(FormInterface $form, $message = 'Transformation form failed.', $code = 0, \Exception $previous = null)
+    public function __construct(FormInterface $form, string $message = 'Transformation form failed.', int $code = 0, \Exception $previous = null)
     {
         parent::__construct($form, $message, $code, $previous);
     }

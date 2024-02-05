@@ -1,42 +1,44 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler\Tests\Form\Extension\Invalid\Type;
 
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symftony\FormHandler\Form\Extension\Invalid\Type\InvalidTypeExtension;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class InvalidTypeExtensionTest extends \PHPUnit_Framework_TestCase
+class InvalidTypeExtensionTest extends TestCase
 {
-    /**
-     * @var OptionsResolver
-     */
-    private $optionsResolverMock;
+    use ProphecyTrait;
 
-    /**
-     * @var InvalidTypeExtension
-     */
-    private $invalidTypeExtension;
+    private OptionsResolver|ObjectProphecy $optionsResolverMock;
 
-    public function setUp()
+    private InvalidTypeExtension $invalidTypeExtension;
+
+    public function setUp(): void
     {
-        $this->optionsResolverMock = $this->getMock(OptionsResolver::class);
+        $this->optionsResolverMock = $this->prophesize(OptionsResolver::class);
 
         $this->invalidTypeExtension = new InvalidTypeExtension();
     }
 
     public function testConfigureOptions()
     {
-        $this->optionsResolverMock->expects($this->once())
-            ->method('setDefaults')
-            ->with($this->equalTo([
+        $this->optionsResolverMock
+            ->setDefaults([
                 'handler_invalid' => false,
-            ]));
+            ])
+            ->willReturn($this->optionsResolverMock->reveal())
+            ->shouldBeCalled();
 
-        $this->invalidTypeExtension->configureOptions($this->optionsResolverMock);
+        $this->invalidTypeExtension->configureOptions($this->optionsResolverMock->reveal());
     }
 
     public function testGetExtendedType()
     {
-        $this->assertEquals('Symfony\Component\Form\Extension\Core\Type\FormType', $this->invalidTypeExtension->getExtendedType());
+        $this->assertEquals([FormType::class], $this->invalidTypeExtension->getExtendedTypes());
     }
 }

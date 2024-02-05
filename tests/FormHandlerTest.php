@@ -1,35 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler\Tests;
 
+use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symftony\FormHandler\Exception\InvalidFormException;
+use Symftony\FormHandler\Exception\NotSubmittedFormException;
+use Symftony\FormHandler\Exception\TransformationFailedFormException;
 use Symftony\FormHandler\FormHandler;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
-class FormHandlerTest extends \PHPUnit_Framework_TestCase
+class FormHandlerTest extends TestCase
 {
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactoryMock;
+    use ProphecyTrait;
 
-    /**
-     * @var FormInterface
-     */
-    private $formMock;
+    private FormFactoryInterface|ObjectProphecy $formFactoryMock;
 
-    /**
-     * @var FormConfigInterface
-     */
-    private $formConfigMock;
+    private FormInterface|ObjectProphecy $formMock;
 
-    /**
-     * @var FormHandler
-     */
-    private $formHandler;
+    private FormConfigInterface|ObjectProphecy $formConfigMock;
 
-    public function setUp()
+    private FormHandler|ObjectProphecy $formHandler;
+
+    public function setUp(): void
     {
         $this->formFactoryMock = $this->prophesize(FormFactoryInterface::class);
         $this->formConfigMock = $this->prophesize(FormConfigInterface::class);
@@ -58,14 +56,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
         $this->formHandler->createForm('my_fake_type', null, 'my_fake_data', ['my_fake_options']);
     }
 
-    /**
-     * @expectedException \Symftony\FormHandler\Exception\NotSubmittedFormException
-     * @expectedExceptionMessage Not submitted form.
-     */
     public function testHandleRequestThrowNotSubmittedFormException()
     {
+        $this->expectException(NotSubmittedFormException::class);
+        $this->expectExceptionMessage('Not submitted form.');
+
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled();
 
         $this->formMock
@@ -95,6 +93,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled();
 
         $this->formMock
@@ -120,14 +119,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my_fake_handler_not_submitted_data', $this->formHandler->handleRequest($this->formMock->reveal(), 'my_fake_request'));
     }
 
-    /**
-     * @expectedException \Symftony\FormHandler\Exception\InvalidFormException
-     * @expectedExceptionMessage Invalid form.
-     */
     public function testHandleRequestThrowInvalidFormException()
     {
+        $this->expectException(InvalidFormException::class);
+        $this->expectExceptionMessage('Invalid form');
+
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled();
 
         $this->formMock
@@ -162,6 +161,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled();
 
         $this->formMock
@@ -192,14 +192,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my_fake_handler_invalid_data', $this->formHandler->handleRequest($this->formMock->reveal(), 'my_fake_request'));
     }
 
-    /**
-     * @expectedException \Symftony\FormHandler\Exception\TransformationFailedFormException
-     * @expectedExceptionMessage Transformation form failed.
-     */
     public function testHandleRequestThrowTransformationFailedFormException()
     {
+        $this->expectException(TransformationFailedFormException::class);
+        $this->expectExceptionMessage('Transformation form failed.');
+
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled();
 
         $this->formMock
@@ -219,7 +219,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->formMock
             ->getTransformationFailure()
-            ->willReturn(true)
+            ->willReturn(new TransformationFailedException())
             ->shouldBeCalled();
 
         $this->formConfigMock
@@ -239,6 +239,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled()
             ->shouldBeCalled();
 
@@ -259,7 +260,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->formMock
             ->getTransformationFailure()
-            ->willReturn(true)
+            ->willReturn(new TransformationFailedException())
             ->shouldBeCalled();
 
         $this->formConfigMock
@@ -279,6 +280,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $this->formMock
             ->handleRequest('my_fake_request')
+            ->willReturn($this->formMock->reveal())
             ->shouldBeCalled();
 
         $this->formMock
@@ -298,7 +300,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->formMock
             ->getTransformationFailure()
-            ->willReturn(false)
+            ->willReturn(null)
             ->shouldBeCalled();
 
         $this->formMock
@@ -309,12 +311,11 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my_fake_form_data', $this->formHandler->handleRequest($this->formMock->reveal(), 'my_fake_request'));
     }
 
-    /**
-     * @expectedException \Symftony\FormHandler\Exception\NotSubmittedFormException
-     * @expectedExceptionMessage Not submitted form.
-     */
     public function testHandleDataThrowNotSubmittedFormException()
     {
+        $this->expectException(NotSubmittedFormException::class);
+        $this->expectExceptionMessage('Not submitted form.');
+
         $this->formMock->getConfig()
             ->willReturn($this->formConfigMock)
             ->shouldBeCalled();
@@ -363,12 +364,11 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('my_fake_handler_not_submitted_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_request']));
     }
 
-    /**
-     * @expectedException \Symftony\FormHandler\Exception\InvalidFormException
-     * @expectedExceptionMessage Invalid form.
-     */
     public function testHandleDataThrowInvalidFormException()
     {
+        $this->expectException(InvalidFormException::class);
+        $this->expectExceptionMessage('Invalid form.');
+
         $this->formMock->getConfig()
             ->willReturn($this->formConfigMock)
             ->shouldBeCalled();
@@ -385,7 +385,12 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
             ->shouldBeCalled();
 
-        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing')
+        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], true)
+            ->willReturn($this->formMock->reveal())
+            ->shouldBeCalled();
+
+        $this->formMock->isSubmitted()
+            ->willReturn(true)
             ->shouldBeCalled();
 
         $this->formMock->isValid()
@@ -400,7 +405,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
             ->shouldBeCalled();
 
-        $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
+        $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], true);
     }
 
     public function testHandleDataInvalid()
@@ -421,7 +426,12 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
             ->shouldBeCalled();
 
-        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing')
+        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], true)
+            ->willReturn($this->formMock->reveal())
+            ->shouldBeCalled();
+
+        $this->formMock->isSubmitted()
+            ->willReturn(true)
             ->shouldBeCalled();
 
         $this->formMock->isValid()
@@ -436,15 +446,14 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn('my_fake_handler_invalid_data')
             ->shouldBeCalled();
 
-        $this->assertEquals('my_fake_handler_invalid_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing'));
+        $this->assertEquals('my_fake_handler_invalid_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], true));
     }
 
-    /**
-     * @expectedException \Symftony\FormHandler\Exception\TransformationFailedFormException
-     * @expectedExceptionMessage Transformation form failed.
-     */
     public function testHandleDataThrowTransformationFailedFormException()
     {
+        $this->expectException(TransformationFailedFormException::class);
+        $this->expectExceptionMessage('Transformation form failed.');
+
         $this->formMock->getConfig()
             ->willReturn($this->formConfigMock)
             ->shouldBeCalled();
@@ -461,7 +470,12 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
             ->shouldBeCalled();
 
-        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing')
+        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], true)
+            ->willReturn($this->formMock->reveal())
+            ->shouldBeCalled();
+
+        $this->formMock->isSubmitted()
+            ->willReturn(true)
             ->shouldBeCalled();
 
         $this->formMock->isValid()
@@ -469,7 +483,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
 
         $this->formMock->getTransformationFailure()
-            ->willReturn(true)
+            ->willReturn(new TransformationFailedException())
             ->shouldBeCalled();
 
         $this->formConfigMock->hasOption('handler_transformation_failed')
@@ -480,7 +494,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
             ->shouldBeCalled();
 
-        $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing');
+        $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], true);
     }
 
     public function testHandleDataTransformationFailed()
@@ -501,7 +515,12 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
             ->shouldBeCalled();
 
-        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing')
+        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], true)
+            ->willReturn($this->formMock->reveal())
+            ->shouldBeCalled();
+
+        $this->formMock->isSubmitted()
+            ->willReturn(true)
             ->shouldBeCalled();
 
         $this->formMock->isValid()
@@ -509,7 +528,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
 
         $this->formMock->getTransformationFailure()
-            ->willReturn(true)
+            ->willReturn(new TransformationFailedException())
             ->shouldBeCalled();
 
         $this->formConfigMock->hasOption('handler_transformation_failed')
@@ -520,7 +539,7 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn('my_fake_handler_transformation_failed_data')
             ->shouldBeCalled();
 
-        $this->assertEquals('my_fake_handler_transformation_failed_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing'));
+        $this->assertEquals('my_fake_handler_transformation_failed_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], true));
     }
 
     public function testHandleData()
@@ -541,7 +560,12 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
             ->shouldBeCalled();
 
-        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing')
+        $this->formMock->submit(['my_fake_key' => 'my_fake_request_value'], true)
+            ->willReturn($this->formMock->reveal())
+            ->shouldBeCalled();
+
+        $this->formMock->isSubmitted()
+            ->willReturn(true)
             ->shouldBeCalled();
 
         $this->formMock->isValid()
@@ -549,13 +573,13 @@ class FormHandlerTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled();
 
         $this->formMock->getTransformationFailure()
-            ->willReturn(false)
+            ->willReturn(null)
             ->shouldBeCalled();
 
         $this->formMock->getData()
             ->willReturn('my_fake_form_data')
             ->shouldBeCalled();
 
-        $this->assertEquals('my_fake_form_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], 'my_fake_clear_missing'));
+        $this->assertEquals('my_fake_form_data', $this->formHandler->handleData($this->formMock->reveal(), ['my_fake_key' => 'my_fake_request_value'], true));
     }
 }

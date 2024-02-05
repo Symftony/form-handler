@@ -1,83 +1,57 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler\Tests\FormBundle\DependencyInjection\Compiler;
 
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symftony\FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
-class FormHandlerCompilerPassTest extends \PHPUnit_Framework_TestCase
+class FormHandlerCompilerPassTest extends TestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
-    private $containerBuilderMock;
+    use ProphecyTrait;
 
-    /**
-     * @var FormHandlerCompilerPass
-     */
-    private $formHandlerCompilerPass;
+    private ContainerBuilder $containerBuilder;
 
-    public function setUp()
+    private FormHandlerCompilerPass $formHandlerCompilerPass;
+
+    public function setUp(): void
     {
-        $this->containerBuilderMock = $this->getMock(
-            ContainerBuilder::class,
-            ['findTaggedServiceIds', 'getDefinition', 'hasDefinition']
-        );
+        $this->containerBuilder = new ContainerBuilder();
 
         $this->formHandlerCompilerPass = new FormHandlerCompilerPass();
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Form factory expected for "form.handler" tagged services.
-     */
     public function testProcessThrowLogicException()
     {
-        $services = [
-            'my_fake_form_handler1' => [],
-        ];
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Form factory expected for "form.handler" tagged services.');
 
-        $this->containerBuilderMock->expects($this->once())
-            ->method('hasDefinition')
-            ->with($this->equalTo('form.factory'))
-            ->willReturn(false);
+        $this->containerBuilder->addDefinitions([
+            'my_custom_form_handler' => (new Definition())->addTag('form.handler')
+        ]);
 
-        $this->containerBuilderMock->expects($this->once())
-            ->method('findTaggedServiceIds')
-            ->with($this->equalTo('form.handler'))
-            ->willReturn($services);
-
-        $this->formHandlerCompilerPass->process($this->containerBuilderMock);
+        $this->formHandlerCompilerPass->process($this->containerBuilder);
     }
 
     public function testProcess()
     {
-        $services = [
-            'my_fake_form_handler1' => [],
-        ];
+        $formFactoryDefinition = new Definition();
 
-        $fakeFormHandler1Mock = $this->getMock(Definition::class);
+        $def = new Definition();
+        $def->addTag('form.handler');
 
-        $this->containerBuilderMock->expects($this->once())
-            ->method('hasDefinition')
-            ->with($this->equalTo('form.factory'))
-            ->willReturn(true);
+        $this->containerBuilder->addDefinitions([
+            'form.factory' => $formFactoryDefinition,
+            'my_custom_form_handler' => $def,
+        ]);
 
-        $this->containerBuilderMock->expects($this->once())
-            ->method('findTaggedServiceIds')
-            ->with($this->equalTo('form.handler'))
-            ->willReturn($services);
+        $this->formHandlerCompilerPass->process($this->containerBuilder);
 
-        $this->containerBuilderMock->expects($this->exactly(2))
-            ->method('getDefinition')
-            ->withConsecutive($this->equalTo(['form.factory']), $this->equalTo(['my_fake_form_handler1']))
-            ->willReturnOnConsecutiveCalls('my_fake_form_factory_definition', $fakeFormHandler1Mock);
-
-        $fakeFormHandler1Mock->expects($this->once())
-            ->method('addMethodCall')
-            ->with($this->equalTo('setFormFactory'), $this->equalTo(['my_fake_form_factory_definition']));
-
-        $this->formHandlerCompilerPass->process($this->containerBuilderMock);
+        $this->assertSame([
+            ['setFormFactory', [$formFactoryDefinition]]
+        ], $def->getMethodCalls());
     }
 }

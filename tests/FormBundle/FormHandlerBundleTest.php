@@ -1,36 +1,38 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler\Tests\FormBundle;
 
+use PHPUnit\Framework\TestCase;
 use Symftony\FormHandler\FormBundle\DependencyInjection\Compiler\FormHandlerCompilerPass;
 use Symftony\FormHandler\FormBundle\FormHandlerBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class FormBundleTest extends \PHPUnit_Framework_TestCase
+class FormHandlerBundleTest extends TestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
-    private $containerBuilderMock;
+    private ContainerBuilder $containerBuilder;
 
-    /**
-     * @var FormHandlerBundle
-     */
-    private $formHandlerBundle;
+    private FormHandlerBundle $formHandlerBundle;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->containerBuilderMock = $this->getMock(ContainerBuilder::class, ['addCompilerPass']);
+        $this->containerBuilder = new ContainerBuilder();
 
         $this->formHandlerBundle = new FormHandlerBundle();
     }
 
     public function testBuild()
     {
-        $this->containerBuilderMock->expects($this->once())
-            ->method('addCompilerPass')
-            ->with($this->isInstanceOf(FormHandlerCompilerPass::class));
+        $this->formHandlerBundle->build($this->containerBuilder);
+        $containFormHandlerCompilerPass = false;
 
-        $this->formHandlerBundle->build($this->containerBuilderMock);
+        foreach ($this->containerBuilder->getCompilerPassConfig()->getPasses() as $passe) {
+            if ($passe instanceof FormHandlerCompilerPass) {
+                $containFormHandlerCompilerPass = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($containFormHandlerCompilerPass);
     }
 }

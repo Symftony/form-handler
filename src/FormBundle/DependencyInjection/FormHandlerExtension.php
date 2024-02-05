@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Symftony\FormHandler\FormBundle\DependencyInjection;
 
@@ -10,15 +11,13 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 /**
  * Class FormExtension
  * @package Symftony\FormHandler\FormBundle\DependencyInjection
- *
- * @codeCoverageIgnore
  */
 class FormHandlerExtension extends Extension
 {
     /**
      * {@inheritDoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
